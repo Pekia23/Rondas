@@ -1,17 +1,19 @@
 {% extends './base.html' %}
-{% block title%}Rondas || Registro {%endblock%}
-{%block custom%}
-<link rel='stylesheet' href="{{url_for('static', filename = 'css/login.css')}}">
-{%endblock%}
-{%block body%}
+{% block title %}Rondas || Registro{% endblock %}
+{% block custom %}
+<link rel='stylesheet' href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock %}
+{% block body %}
 <div class="login-div">
   <div class="carrusel">
-      <img class="w-100 d-block" src="{{url_for('static',filename='img/bote2.png')}}" alt="Third slide">
+      <img class="w-100 d-block" src="{{ url_for('static', filename='img/bote2.png') }}" alt="Third slide">
   </div>
-  <div class="login" >
-    <form action="/login" method="POST">
-      <img class="mb-4" src="{{url_for('static',filename='img/CotecmarLogo.png')}}" alt="Cotecmar"   height="100">
-     
+  <div class="login">
+
+    <form action="/signup" method="POST">
+
+      <img class="mb-4" src="{{ url_for('static', filename='img/CotecmarLogo.png') }}" alt="Cotecmar" height="100">
+
       {% with messages = get_flashed_messages() %}
       {% if messages %}
         <ul class="flashes">
@@ -22,29 +24,34 @@
       {% endif %}
       {% endwith %}
 
-      <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
       <h1 class="h3 mb-3 fw-normal">Registro</h1>
-      
+
       <div class="form-floating">
         <input type="text" class="form-control" id="nombre_completo" name="nombre_completo" placeholder="Nombre Completo" required>
         <label for="nombre_completo">Nombre Completo</label>
-     </div>
-     <br>
+      </div>
+      <br>
       <div class="form-floating">
         <input type="email" class="form-control" id="correo" name="correo" placeholder="name@example.com" required>
-        <label for="floatingInput">Correo</label>
+        <label for="correo">Correo</label>
       </div>
       <br>
       <div class="form-floating">
         <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
-        <label for="floatingPassword">Contraseña</label>
+        <label for="password">Contraseña</label>
+      </div>
+      <br>
+      <div class="form-floating">
+        <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Confirmar Contraseña" required>
+        <label for="confirm_password">Confirmar Contraseña</label>
       </div>
       <br>
       <button class="btn btn-primary w-100 py-2" type="submit">Registrar</button>
-      
-      <a href="/login">Tengo cuenta</a></p>
+      <br><br>
+      <a href="/login">Tengo cuenta</a>
     </form>
   </div>
 </div>
-{%endblock%}
+{% endblock %}

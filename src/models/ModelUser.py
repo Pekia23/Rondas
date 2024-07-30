@@ -31,12 +31,13 @@ class ModelUser():
             else:
                 return None    
         except Exception as ex:
-            raise Exception(ex) 
+            raise Exception(ex)
 
     @classmethod
-    def register_user(cls, db, correo, password,nombre_completo, rol):
+    def register_user(cls, db, correo, password, nombre_completo,rol):
         try:
-            new_user=User.created_user(db,correo,password,nombre_completo,rol)
+            new_user = User.create_user(db,correo,password,nombre_completo,rol)
             return new_user
         except Exception as ex:
-            raise Exception(ex)          
+            raise Exception(ex)
+

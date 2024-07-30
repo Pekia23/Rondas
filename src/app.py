@@ -1,8 +1,9 @@
-from flask import Flask, flash, jsonify, redirect, request, url_for
+from flask import Flask, flash, redirect, request, url_for
 from flask.templating import render_template
 from flask_mysqldb import MySQL
 from flask_wtf.csrf import CSRFProtect
 from flask_login import LoginManager,login_user,logout_user,login_required
+
 from config import config
 #models
 from models.ModelUser import ModelUser
@@ -27,7 +28,6 @@ def login():
     if request.method=="POST":
        user = User(0,request.form["correo"],request.form["password"])
        logged_user= ModelUser.login(db,user)
-
        if logged_user!=None:
             if logged_user.password:
                 login_user(logged_user)
@@ -47,6 +47,7 @@ def logout():
     return redirect(url_for('login'))
     
 @app.route('/home')
+@login_required
 def home():
     return render_template('home.html')
 
@@ -60,31 +61,19 @@ def signup():
     if request.method == 'POST':
         correo = request.form['correo']
         password = request.form['password']
+        confirm_password = request.form['confirm_password']
         nombre_completo = request.form['nombre_completo']
+        fullname = nombre_completo.title()
         rol = 'user'
-        print(correo,password,nombre_completo,rol)
-        new_user = ModelUser.register_user(db,correo,password,nombre_completo,rol)
-        return redirect(url_for('login'))
-    else:
-        return render_template('auth/signup.html')   
-
-
-@app.route('/check_db', methods=['GET'])
-def check_db():
-    try:
-        # Crear un cursor y ejecutar una consulta simple
-        cursor = db.connection.cursor()
-        cursor.execute("SELECT 1")
-        result = cursor.fetchone()
-        cursor.close()
-
-        if result:
-            return jsonify({"status": "success", "message": "Database connection is successful!"}), 200
+        if password == confirm_password:
+            new_user = ModelUser.register_user(db, correo, password, fullname, rol)
+            return redirect(url_for('login'))
         else:
-            return jsonify({"status": "error", "message": "Database query failed!"}), 500
-    except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
-
+            flash("Las contraseñas no coinciden")
+            # Pasar los valores de correo y nombre completo a la plantilla
+            return render_template('auth/signup.html', correo=correo, nombre_completo=nombre_completo)
+    else:
+        return render_template('auth/signup.html')    
 
 def status401(error):
     return redirect(url_for('login'))
