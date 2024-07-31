@@ -1,0 +1,29 @@
+/* Estilo para el fondo del contenedor de proyecto */
+.proyecto {
+    background-color: rgb(9, 9, 86);
+    
+}
+
+.navbar-brand{
+    color: white !important; 
+}
+
+/* Estilo para el logo */
+.logoblanco {
+    width: 90px;
+}
+
+/* Cambia el color del texto del navbar a blanco */
+.navbar-nav .nav-link {
+    color: white !important; /* !important asegura que este estilo sobrescriba otros estilos */
+}
+
+/* Opcional: Cambia el color del texto activo del navbar */
+.navbar-nav .nav-link.active {
+    color: white !important;
+}
+
+/* Opcional: Cambia el color del texto deshabilitado del navbar */
+.navbar-nav .nav-link.disabled {
+    color: #6c757d; /* Puedes ajustar el color del texto deshabilitado si es necesario */
+}

@@ -32,6 +32,16 @@ class ModelUser():
                 return None    
         except Exception as ex:
             raise Exception(ex)
+            
+    @classmethod
+    def get_correo(self,db,correo):
+        cursor=db.connection.cursor()
+        sql = "SELECT * FROM user WHERE correo= %s"
+        cursor.execute(sql,(correo,))
+        user = cursor.fetchone()
+        return user
+        
+
 
     @classmethod
     def register_user(cls, db, correo, password, nombre_completo,rol):

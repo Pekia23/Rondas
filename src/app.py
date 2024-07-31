@@ -31,7 +31,7 @@ def login():
        if logged_user!=None:
             if logged_user.password:
                 login_user(logged_user)
-                return redirect(url_for('home'))
+                return redirect(url_for('proyecto'))
             else:
                 flash("...Credenciales incorrectas...") 
                 return render_template('auth/login.html')
@@ -46,10 +46,10 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
     
-@app.route('/home')
+@app.route('/proyectos')
 @login_required
-def home():
-    return render_template('home.html')
+def proyecto():
+    return render_template('proyecto.html')
 
 @app.route('/protected')
 @login_required
@@ -65,6 +65,9 @@ def signup():
         nombre_completo = request.form['nombre_completo']
         fullname = nombre_completo.title()
         rol = 'user'
+        if ModelUser.get_correo(db, correo):
+            flash("El correo ya está registrado")
+            return render_template('auth/signup.html')
         if password == confirm_password:
             new_user = ModelUser.register_user(db, correo, password, fullname, rol)
             return redirect(url_for('login'))
