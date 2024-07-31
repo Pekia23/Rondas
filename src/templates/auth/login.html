@@ -1,5 +1,5 @@
 {% extends './base.html' %}
-{% block title%}Rondas || Iniciar sección {%endblock%}
+{% block title%}Rondas || Iniciar sesión {%endblock%}
 {%block custom%}
 <link rel='stylesheet' href="{{url_for('static', filename = 'css/login.css')}}">
 {%endblock%}
@@ -24,7 +24,7 @@
 
       <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
 
-      <h1 class="h3 mb-3 fw-normal">Inicio de sección</h1>
+      <h1 class="h3 mb-3 fw-normal">Inicio de sesión</h1>
 
 
       <div class="form-floating">
@@ -44,7 +44,7 @@
         </label>
       </div>
 
-      <button class="btn btn-primary w-100 py-2" type="submit">Iniciar sección</button>
+      <button class="btn btn-primary w-100 py-2" type="submit">Iniciar sesión</button>
 
       <p>¿No tienes una cuenta? <a href="/signup">Regístrate aquí</a></p>
     </form>
