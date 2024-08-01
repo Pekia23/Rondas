@@ -1,8 +1,13 @@
+
 /* Estilo para el fondo del contenedor de proyecto */
-.proyecto {
+.divnavbar {
     background-color: rgb(9, 9, 86);
-    
 }
+
+.divbody{
+    align-items: center; /* Centra horizontalmente */
+    justify-content: center; /* Centra verticalmente */
+ }
 
 .navbar-brand{
     color: white !important; 
@@ -18,12 +23,17 @@
     color: white !important; /* !important asegura que este estilo sobrescriba otros estilos */
 }
 
-/* Opcional: Cambia el color del texto activo del navbar */
-.navbar-nav .nav-link.active {
-    color: white !important;
+.buscador {
+    flex-direction: column;
+    margin-top: 20px;
+    width: auto;
+  }
+  
+.buscador .form-control {
+    margin-right: 10px;
+    width: 90%; /* Ajusta la anchura de la barra de búsqueda */
 }
 
-/* Opcional: Cambia el color del texto deshabilitado del navbar */
-.navbar-nav .nav-link.disabled {
-    color: #6c757d; /* Puedes ajustar el color del texto deshabilitado si es necesario */
-}
+.search-form .form-control {
+    width: 90%;  /* Ajusta este valor según tus necesidades */
+  }

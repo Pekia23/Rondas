@@ -40,9 +40,31 @@ class ModelUser():
         cursor.execute(sql,(correo,))
         user = cursor.fetchone()
         return user
-        
-
-
+    
+    @classmethod
+    def get_proyecto(self,db,proyecto):
+        cursor=db.connection.cursor()
+        sql = "SELECT * FROM proyecto WHERE nombre LIKE %s"
+        cursor.execute(sql,(proyecto,))
+        user = cursor.fetchone()
+        return user
+    
+    def get_categoria(self,db,categoria):
+        cursor=db.connection.cursor()
+        sql = """SELECT 
+                    proyecto.nombre AS proyecto_nombre,
+                    proyecto.anio_produccion,
+                    proyecto.imagen,
+                    embaracacion.nombre AS embaracacion_nombre,
+                    categoria_embarcacion.nombre AS categoria_embarcacion
+                    FROM proyecto
+                    JOIN embaracacion ON proyecto.id_embarcacion = embaracacion.id
+                    JOIN categoria_embarcacion ON embaracacion.id_categoria = categoria_embarcacion.id
+                    WHERE categoria_embarcacion.nombre LIKE %s"""
+        cursor.execute(sql,(categoria,))
+        user = cursor.fetchone()
+        return user
+    
     @classmethod
     def register_user(cls, db, correo, password, nombre_completo,rol):
         try:

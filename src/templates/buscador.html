@@ -1,0 +1,23 @@
+{% extends '/proyecto.html' %}
+{%block body%}
+{{super()}}
+
+<div id="resultado" class="text-center">
+    <h4 class="text center">Resultado<br></h4>
+    {%if (midata)%}
+    <section>
+        {%for item in midata%}
+            <div class="card" style="width: 18rem;">
+                <img class="card-img-top" src={{item.imagen}} alt="Card image cap">
+                <div class="card-body">
+                    <p class="card-text">Nombre: {{item.nombre}} <br> Año: {{item.anio_produción}}</p>
+                </div>
+                <a class="btn btn-primary" href="#" role="button">Ver más</a>
+            </div>
+        {%endfor%}   
+    </section>
+    {% else %}
+    <p>No se encontraron resultados</p>
+    {% endif %}
+</div>
+{%endblock%}

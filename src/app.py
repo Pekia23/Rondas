@@ -1,8 +1,9 @@
-from flask import Flask, flash, redirect, request, url_for
+from flask import Flask, flash, redirect, request, url_for,session
 from flask.templating import render_template
 from flask_mysqldb import MySQL
 from flask_wtf.csrf import CSRFProtect
 from flask_login import LoginManager,login_user,logout_user,login_required
+from forms import SearchForm #importar el formulario
 
 from config import config
 #models
@@ -12,7 +13,7 @@ from models.entities.User import User
 
 app = Flask(__name__)
 db = MySQL(app)
-csrf = CSRFProtect()
+csrf = CSRFProtect(app)
 login_manager_app = LoginManager(app)
 
 @login_manager_app.user_loader
@@ -46,15 +47,29 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
     
-@app.route('/proyectos')
+@app.route('/proyecto', methods=['GET','POST'])
 @login_required
 def proyecto():
-    return render_template('proyecto.html')
+    form = SearchForm()  # Crea una instancia del formulario
+    if form.validate_on_submit():
+        search = form.Buscar.data
+        proyectos = ModelUser.get_proyecto(db, search)
+        categorias = ModelUser.get_categoria(db, search)
+        
+        resultado = []
+        if proyectos:
+            resultado.extend(proyectos)
+        if categorias:
+            resultado.extend(categorias)
+        
+        session['resultado'] = resultado
+        return redirect(url_for('buscador', busqueda=search))
+    return render_template('proyecto.html', form=form) 
 
-@app.route('/protected')
+@app.route('/buscador')
 @login_required
-def protected():
-    return "<h1> area restigida, solo personal autorizado XD </h1>"
+def buscador():
+    return render_template('buscador.html')
 
 @app.route('/signup', methods=['GET','POST'])
 def signup():
