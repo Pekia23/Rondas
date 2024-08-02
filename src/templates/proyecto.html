@@ -33,17 +33,16 @@
 
 <div class="divbody">
   <br>
-  <h2>PROYECTOS EN LA RONDA DE MANTENIMIENTO</h2>
-  <br>
+  <h2>Proyectos en rondas de mantenimiento</h2>
 
   <div class="buscador">
-    <div class="input-group mb-3">
+    <form class="input-group mb-3" method="POST" action="{{ url_for('proyecto') }}">
       {{ form.hidden_tag() }}  <!-- Esto asegura que el token CSRF está incluido -->
-      <input type="text" class="form-control" placeholder="Buscar proyecto" aria-label="Recipient's username" aria-describedby="basic-addon2">
+      {{ form.Buscar(class="form-control", placeholder="Buscar proyecto") }}
       <div class="input-group-append">
-        <button class="btn btn-outline-secondary" type="submit">Buscar</button>
+        {{ form.submit(class="btn btn-outline-secondary") }}
       </div>
-    </div>
+    </form>
   </div>
 </div>
 

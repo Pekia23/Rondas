@@ -4,9 +4,9 @@
 
 <div id="resultado" class="text-center">
     <h4 class="text center">Resultado<br></h4>
-    {%if (midata)%}
+    {%if (busqueda)%}
     <section>
-        {%for item in midata%}
+        {%for item in busqueda%}
             <div class="card" style="width: 18rem;">
                 <img class="card-img-top" src={{item.imagen}} alt="Card image cap">
                 <div class="card-body">

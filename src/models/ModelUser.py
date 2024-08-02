@@ -42,14 +42,7 @@ class ModelUser():
         return user
     
     @classmethod
-    def get_proyecto(self,db,proyecto):
-        cursor=db.connection.cursor()
-        sql = "SELECT * FROM proyecto WHERE nombre LIKE %s"
-        cursor.execute(sql,(proyecto,))
-        user = cursor.fetchone()
-        return user
-    
-    def get_categoria(self,db,categoria):
+    def get_search(self,db,search):
         cursor=db.connection.cursor()
         sql = """SELECT 
                     proyecto.nombre AS proyecto_nombre,
@@ -60,10 +53,11 @@ class ModelUser():
                     FROM proyecto
                     JOIN embaracacion ON proyecto.id_embarcacion = embaracacion.id
                     JOIN categoria_embarcacion ON embaracacion.id_categoria = categoria_embarcacion.id
-                    WHERE categoria_embarcacion.nombre LIKE %s"""
-        cursor.execute(sql,(categoria,))
-        user = cursor.fetchone()
+                    WHERE categoria_embarcacion.nombre LIKE %s OR proyecto.nombre LIKE %s"""
+        cursor.execute(sql,('%'+ search + '%','%'+search+'%'))
+        user = cursor.fetchall()
         return user
+    
     
     @classmethod
     def register_user(cls, db, correo, password, nombre_completo,rol):

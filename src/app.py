@@ -4,7 +4,7 @@ from flask_mysqldb import MySQL
 from flask_wtf.csrf import CSRFProtect
 from flask_login import LoginManager,login_user,logout_user,login_required
 from forms import SearchForm #importar el formulario
-
+import re
 from config import config
 #models
 from models.ModelUser import ModelUser
@@ -53,15 +53,8 @@ def proyecto():
     form = SearchForm()  # Crea una instancia del formulario
     if form.validate_on_submit():
         search = form.Buscar.data
-        proyectos = ModelUser.get_proyecto(db, search)
-        categorias = ModelUser.get_categoria(db, search)
-        
-        resultado = []
-        if proyectos:
-            resultado.extend(proyectos)
-        if categorias:
-            resultado.extend(categorias)
-        
+        print("valor de formulado: ",search)
+        resultado = ModelUser.get_search(db, search)
         session['resultado'] = resultado
         return redirect(url_for('buscador', busqueda=search))
     return render_template('proyecto.html', form=form) 
@@ -69,9 +62,30 @@ def proyecto():
 @app.route('/buscador')
 @login_required
 def buscador():
-    return render_template('buscador.html')
+    form = SearchForm()  # Create an instance of the form
+    return render_template('buscador.html', form=form)
 
-@app.route('/signup', methods=['GET','POST'])
+def validar_contraseña(contraseña):
+    # Expresión regular para validar la contraseña
+    regex = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$'
+    
+    # Verificar si la contraseña cumple con la expresión regular
+    if re.match(regex, contraseña):
+        return True
+    else:
+        return False
+
+def validar_correo(correo):
+    # Expresión regular para validar el correo
+    regex = r'^[a-zA-Z0-9._%+-]+@cotecmar\.com$'
+    
+    # Verificar si el correo cumple con la expresión regular
+    if re.match(regex, correo):
+        return True
+    else:
+        return False
+
+@app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
         correo = request.form['correo']
@@ -80,18 +94,32 @@ def signup():
         nombre_completo = request.form['nombre_completo']
         fullname = nombre_completo.title()
         rol = 'user'
+        nombre_regex = re.compile(r"^[A-Za-záéíóúÁÉÍÓÚñÑüÜ' -]+$")
+
+        if not nombre_regex.match(nombre_completo):
+            flash("El nombre completo contiene caracteres no permitidos")
+            return render_template('auth/signup.html', correo=correo, nombre_completo=nombre_completo)
+        
+        if not validar_correo(correo):
+            flash("El correo debe terminar en @cotecmar.com")
+            return render_template('auth/signup.html', correo=correo, nombre_completo=nombre_completo)
+        
         if ModelUser.get_correo(db, correo):
             flash("El correo ya está registrado")
-            return render_template('auth/signup.html')
-        if password == confirm_password:
-            new_user = ModelUser.register_user(db, correo, password, fullname, rol)
-            return redirect(url_for('login'))
-        else:
-            flash("Las contraseñas no coinciden")
-            # Pasar los valores de correo y nombre completo a la plantilla
             return render_template('auth/signup.html', correo=correo, nombre_completo=nombre_completo)
-    else:
-        return render_template('auth/signup.html')    
+        
+        if password != confirm_password:
+            flash("Las contraseñas no coinciden")
+            return render_template('auth/signup.html', correo=correo, nombre_completo=nombre_completo)
+
+        if not validar_contraseña(password):
+            flash("La contraseña no cumple con los requisitos de seguridad")
+            return render_template('auth/signup.html', correo=correo, nombre_completo=nombre_completo)
+
+        new_user = ModelUser.register_user(db, correo, password, fullname, rol)
+        return redirect(url_for('login'))
+    
+    return render_template('auth/signup.html')   
 
 def status401(error):
     return redirect(url_for('login'))
