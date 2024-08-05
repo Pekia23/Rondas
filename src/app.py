@@ -16,6 +16,7 @@ db = MySQL(app)
 csrf = CSRFProtect(app)
 login_manager_app = LoginManager(app)
 
+
 @login_manager_app.user_loader
 def load_user(id):
     return ModelUser.get_by_id(db,id)
@@ -53,7 +54,6 @@ def proyecto():
     form = SearchForm()  # Crea una instancia del formulario
     if form.validate_on_submit():
         search = form.Buscar.data
-        print("valor de formulado: ",search)
         resultado = ModelUser.get_search(db, search)
         session['resultado'] = resultado
         return redirect(url_for('buscador', busqueda=search))
@@ -62,8 +62,10 @@ def proyecto():
 @app.route('/buscador')
 @login_required
 def buscador():
-    form = SearchForm()  # Create an instance of the form
-    return render_template('buscador.html', form=form)
+    busqueda = request.args.get('busqueda')  # Obtener el parámetro de la URL
+    resultado = session.get('resultado', None)  # Obtener el resultado de la sesión
+    form = SearchForm()  # Crear una instancia del formulario
+    return render_template('buscador.html', form=form, busqueda=busqueda, resultado=resultado)
 
 def validar_contraseña(contraseña):
     # Expresión regular para validar la contraseña
@@ -98,23 +100,23 @@ def signup():
 
         if not nombre_regex.match(nombre_completo):
             flash("El nombre completo contiene caracteres no permitidos")
-            return render_template('auth/signup.html', correo=correo, nombre_completo=nombre_completo)
+            return render_template('auth/signup.html')
         
         if not validar_correo(correo):
             flash("El correo debe terminar en @cotecmar.com")
-            return render_template('auth/signup.html', correo=correo, nombre_completo=nombre_completo)
+            return render_template('auth/signup.html')
         
         if ModelUser.get_correo(db, correo):
             flash("El correo ya está registrado")
-            return render_template('auth/signup.html', correo=correo, nombre_completo=nombre_completo)
+            return render_template('auth/signup.html')
         
         if password != confirm_password:
             flash("Las contraseñas no coinciden")
-            return render_template('auth/signup.html', correo=correo, nombre_completo=nombre_completo)
+            return render_template('auth/signup.html')
 
         if not validar_contraseña(password):
             flash("La contraseña no cumple con los requisitos de seguridad")
-            return render_template('auth/signup.html', correo=correo, nombre_completo=nombre_completo)
+            return render_template('auth/signup.html')
 
         new_user = ModelUser.register_user(db, correo, password, fullname, rol)
         return redirect(url_for('login'))
